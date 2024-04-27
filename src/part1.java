@@ -8,7 +8,7 @@
  *
  * @author Qamar
  */
-public class CPCS361Group15POurCode {
+public class part1 {
 
     /**
      * @param args the command line arguments
