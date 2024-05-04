@@ -1,0 +1,40 @@
+
+<< At time 36:
+  Current Available Main Memory = 1
+  Current Devices               = 3
+
+  Completed jobs: 
+  ----------------
+  Job ID   Burst Time   Arrival Time    Finish Time  Turnaround Time   Waiting Time 
+  =================================================================
+    1        8         10               18              8   0.000000
+    3        5         15               23              8   0.000000
+    4        7         19               33             14   9.000000
+    5        4         21               34             13  12.000000
+
+
+
+  Hold Queue 1: 
+  ----------------
+     8
+
+
+  Hold Queue2: 
+  ----------------
+
+
+
+ (Ready Queue): 
+  ----------------
+  JobID    Remaining Time    Total Execution Time 
+  ===============================
+    7        12              0
+
+
+
+  Process running on the CPU: 
+  ----------------------------
+  Job ID   Run Time    Time Left
+    6         8              8
+
+
