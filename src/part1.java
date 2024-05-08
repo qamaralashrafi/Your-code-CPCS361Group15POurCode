@@ -12,13 +12,12 @@ import java.util.Scanner;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
-
-
 /**
  *
  * @author Qamar
  */
 public class part1 {
+
     /**
      * @param args the command line arguments
      */
@@ -48,167 +47,207 @@ public class part1 {
 
     public static void main(String[] args) throws FileNotFoundException {
         {
-        File file = new File("input.txt");
-        Scanner input = new Scanner(file);
-        write = new PrintWriter("output.txt");
-        String line;
-        String[] command;
-        while (input.hasNextLine()) {
-            // read line by line from the input file
-            line = input.nextLine().replaceAll("[a-zA-Z]=", "");
-            // separate the info in an array
-            command = line.split(" ");
-            //------------------------------------------------------------------
-            // read system configuration
-            if (command[0].equals("C")) {                
-                startingTime = Integer.parseInt(command[1]);
-                currentTime = startingTime;               
-                mainMemorySize = Integer.parseInt(command[2]);
-                devices = Integer.parseInt(command[3]);
-                avbMemory = mainMemorySize;                
-                avbDevices = devices;
-                //--------------------------------------------------------------
-                // read "A" add jobs
-            } else if (command[0].equals("A")) {                
-                int arrivingTime = Integer.parseInt(command[1]);
-                int jobNo = Integer.parseInt(command[2]);
-                int requestedMM = Integer.parseInt(command[3]);
-                int requestedDevices = Integer.parseInt(command[4]);
-                int burstTime = Integer.parseInt(command[5]);
-                int JobPriority = Integer.parseInt(command[6]);
-                // create process for all valid jobs then add them to SubmitQueue
-                if (requestedMM <= mainMemorySize && requestedDevices <= devices) {
-                    SubmitQueue.add(new Job(arrivingTime, jobNo, requestedMM, requestedDevices, burstTime, JobPriority));
-                    jobNum++; //to count the number of job entered to the queue
+
+            File file = new File("input2.txt");
+            Scanner input = new Scanner(file);
+
+            write = new PrintWriter("output2.txt");
+
+            String line;
+            String[] command;
+
+            while (input.hasNextLine()) {
+                // read line by line from the input file
+                line = input.nextLine().replaceAll("[a-zA-Z]=", "");
+                // separate the info in an array
+                command = line.split(" ");
+                //------------------------------------------------------------------
+                // read system configuration
+                if (command[0].equals("C")) {
+
+                    startingTime = Integer.parseInt(command[1]);
+
+                    currentTime = startingTime;
+
+                    mainMemorySize = Integer.parseInt(command[2]);
+
+                    devices = Integer.parseInt(command[3]);
+
+                    avbMemory = mainMemorySize;
+
+                    avbDevices = devices;
+
+                    //--------------------------------------------------------------
+                    // add A
+                } else if (command[0].equals("A")) {
+
+                    int arrivingTime = Integer.parseInt(command[1]);
+                    int jobNo = Integer.parseInt(command[2]);
+                    int requestedMM = Integer.parseInt(command[3]);
+                    int requestedDevices = Integer.parseInt(command[4]);
+                    int burstTime = Integer.parseInt(command[5]);
+                    int JobPriority = Integer.parseInt(command[6]);
+                    // create process for all valid jobs then add them to SubmitQueue
+                    if (requestedMM <= mainMemorySize && requestedDevices <= devices) {
+                        SubmitQueue.add(new Job(arrivingTime, jobNo, requestedMM, requestedDevices, burstTime, JobPriority));
+                        jobNum++; //to count the number of job entered to the queue
+                    } else {
+                        write.println("Job " + jobNo + " has been rejected due to insufficient resources.");
+                    }
+                    // add D
+                } else if (command[0].equals("D")) {
+                    int systemStateTime = Integer.parseInt(command[1]);
+                    if (systemStateTime != 999999) {
+                        // write the state of the system at a specified time
+                        SubmitQueue.add(new Job(systemStateTime));
+                    } else {
+
+                        display = systemStateTime;
+
+                        //----------------------------------------------------------
+                        // poll out first job to be executed
+                        Job job1 = SubmitQueue.poll();
+                        currentTime = job1.getArrivingTime();
+                        avbMemory = mainMemorySize - job1.getRequestedMemory();
+                        avbDevices = devices - job1.getRequestedDevices();
+                        quantum = job1.getburstTime();
+                        exeJob = job1;
+                        exeJob.setStartTime(currentTime);//start time of running on cpu
+                        exeJob.setFinishTime(quantum + currentTime);//end time of running on cpu
+
+                        //----------------------------------------------------------
+                        // send the rest of jobs to cpu
+                        while (jobNum != CompleteQueue.size()) {
+
+                            if (SubmitQueue.isEmpty()) {
+                                i = maximumValue; // if submit queue is empty then
+                            } else {//if submit queue is not empty
+                                i = SubmitQueue.peek().getArrivingTime(); //arrival time of next job
+                            }
+
+                            if (exeJob == null) {//if no current running process
+                                e = maximumValue;
+                            } else {
+                                e = exeJob.getFinishTime();
+                            }
+                            //------------------------------------------------------
+                            // update system time each iteration
+                            currentTime = Math.min(i, e);
+                            //------------------------------------------------------
+                            // the system works acccording to i and e values
+                            if (i < e) {
+                                externalEvent(write);
+                            } else if (i > e) {
+                                internalEvent();
+                            } else if (i == e) {
+                                // when i == e
+                                // perform internal events before external events
+                                internalEvent();
+                                externalEvent(write);
+                            }
+                        }
+                        //----------------------------------------------------------
+                        // write system final state& reset variables
+                        if (display == 999999 && CompleteQueue.size() == jobNum || !input.hasNextLine()) {
+                            finalState(write);
+                            CompleteQueue.clear();
+                            HoldQueue1.clear();
+                            HoldQueue2.clear();
+                            ReadyQueue.clear();
+                            SubmitQueue.clear();
+                            exeJob = null;
+                            startingTime = 0;
+                            currentTime = 0;
+                            quantum = 0;
+                            jobNum = 0;
+                            display = 0;
+                            SR = 0;
+                            AR = 0;
+                        }
+                    }
+
                 }
-                // read "D" display job
-            } else if (command[0].equals("D")) {
-                int systemStateTime = Integer.parseInt(command[1]);
-                if (systemStateTime != 999999) {
-                    // write the state of the system at a specified time
-                    Job displayJob= new Job(systemStateTime);                   
-                    SubmitQueue.add(displayJob);                    
-                    displayJob.setJobNumber(-1);                   
-                } else {                    
-                        System.out.print("hello first");
-                        System.out.print(systemStateTime);
-                        Job displayJob= new Job(systemStateTime);                    
-                        SubmitQueue.add(displayJob);                    
-                        displayJob.setJobNumber(999999);}
-                        //----------------------------------------------------------
-                        // poll out first job to be executed                        
-                        Dynamic_Round_Robin(SubmitQueue.poll());
-                        //----------------------------------------------------------
-                        // send the rest of jobs to cpu      
-                    //while (jobNum >= CompleteQueue.size()) {
-                    while (jobNum >= CompleteQueue.size()) {
-                        System.out.println(CompleteQueue.size());
-                        System.out.println(jobNum);
-                        
-                        if (SubmitQueue.isEmpty()) {
-                            e = maximumValue; // if submet queue is empty then i=infinite
-                        } else {
-                            e = SubmitQueue.peek().getArrivingTime();
-                        }
-                        // set e value to perform external events
-                        if (exeJob == null) {
-                            i = maximumValue; //no running job, e= infinite
-                        } else {
-                            i = exeJob.getFinishTime();
-                        }
-                        System.out.println(i + "" + e);
-                        //------------------------------------------------------
-                        // update system time each iteration
-                        currentTime = Math.min(i, e);
-                        //------------------------------------------------------
-                        // the system works acccording to i and e values
-                        if (i > e) { //finish time of running process bigger than start time of next process
-                            externalEvent(write); //put proccess in one of the hold queues
-                        } else if (i < e) {//start time of next process bigger than finish time of running process
-                            internalEvent(); //run process
-                        } else if (i==e){
-                            // when i == e
-                            // perform internal events before external events
-                            internalEvent();
-                            externalEvent(write);
-                        } }
-                    // write system final state& reset variables
-//                if ( display == 999999 && CompleteQueue.size() == jobNum) {
-                    if (CompleteQueue.size() == jobNum) {
-                        finalState(write);
-                        CompleteQueue.clear();
-                        ReadyQueue.clear();
-                        HoldQueue1.clear();
-                        HoldQueue2.clear();
-                        SubmitQueue.clear();
-                        exeJob = null;
-                        startingTime = 0;
-                        currentTime = 0;
-                        quantum = 0;
-                        jobNum = 0;
-                        display = 0;
-                        SR = 0;
-                        AR = 0;
-                    } }}
-        input.close();
-        write.close(); }}
-    
 
-       
-    public static void internalEvent() throws FileNotFoundException {
-    System.out.println("hello internal");
-    System.out.println("Current exeJob: " + exeJob.toString());
-        // CPU EXECUTION
-        if(exeJob!=null){
-
-        if (exeJob.getremainingTime() < quantum) {
-            exeJob.setremainingTime(0); // Job finishes, set remaining time to 0
-        } else {
-            exeJob.setremainingTime(exeJob.getremainingTime() - quantum);
+            }
+            input.close();
+            write.close();
         }
-        // if job burst time is done
 
-            if (exeJob.getremainingTime() == 0) {
+    }
+
+    public static void internalEvent() throws FileNotFoundException {
+        System.out.println("hello internal");
+
+        // CPU EXECUTION
+        if (exeJob != null) {
+            System.out.println("Current exeJob: " + exeJob.toString());
+            System.out.println("Current time = " + currentTime);
+            exeJob.setremainingTime(exeJob.getremainingTime() - quantum);
+            System.out.println("Current remaining: " + exeJob.getremainingTime());
+            // if job burst time is done
+
+            if (exeJob.getremainingTime() <= 0) {
 
                 CPUrelease();
-                // next job is sent to CPU
+
                 toReadyQueue(null);
 
-                if(!ReadyQueue.isEmpty()){
+                // next job is sent to CPU
+                if (!ReadyQueue.isEmpty()) {
                     exeJob = ReadyQueue.poll();
-                    // set quantum time
-                    quantum = Math.min(exeJob.getremainingTime(), AR);
+
+                    System.out.println("Current exeJob: " + exeJob);
+
+                    System.out.println("Current time = " + currentTime);
+
+                    if (AR >= 0) {
+                        // Set the time quantum (TQ) for the next job
+                        quantum = Math.min(exeJob.getremainingTime(), AR);
+                    } else {
+                        quantum = exeJob.getremainingTime();
+                    }
                     // set the job start time of execution
                     exeJob.setStartTime(currentTime);
                     // set the executing job finish time
                     int finish = Math.min(exeJob.getremainingTime(), quantum);
+
                     exeJob.setFinishTime(currentTime + finish);
+                        
+                    exeJob.setremainingTime(exeJob.getremainingTime() - quantum);
+                    
+                    ComputeAvgBT();
                     // update SR& AR
                     SRAR();
-               //Dynamic_Round_Robin(exeJob);
-            }else//if ready queue is empty 
-                externalEvent(write);
-            }else if(exeJob.getremainingTime() > 0){
+                } else//if ready queue is empty 
+                { if(!SubmitQueue.isEmpty()){
+                    // poll out first job to be executed
+                    Job job1 = SubmitQueue.poll();
+                    currentTime = job1.getArrivingTime();
+                    avbMemory = mainMemorySize - job1.getRequestedMemory();
+                    avbDevices = devices - job1.getRequestedDevices();
+                    quantum = job1.getburstTime();
+                    exeJob = job1;
+                    exeJob.setStartTime(currentTime);//start time of running on cpu
+                    exeJob.setFinishTime(quantum + currentTime);//end time of running on cpu
+}
+                }
+            } else if (exeJob.getremainingTime() > 0) {
                 Dynamic_Round_Robin(exeJob);
-            //}externalEvent(write);
-        }else {
-            
-            // if the job is not finished, it is sent to hold ready queue
-            //externalEvent(write);
-            //Dynamic_Round_Robin(exeJob);
-            externalEvent(write);
-        }
-    }
-        for (Job p : ReadyQueue) {
-            //To set the waiting time
-            if(p!=null){
-            p.setWaitingTime(currentTime - p.getArrivingTime());
-            //p.setWaitingTime(p.getTurnAT() - p.getburstTime());
+                //}externalEvent(write);
             }
         }
+//        else {
+//
+//            // if the job is not finished, it is sent to hold ready queue
+//            //externalEvent(write);
+//            //Dynamic_Round_Robin(exeJob);
+//            externalEvent(write);
+//        }
+
     }
+
     public static void ComputeAvgBT() {
-    System.out.println("hello avgbt");
+        System.out.println("hello avgbt");
         if (!ReadyQueue.isEmpty()) {
             int sumBT = 0;
 
@@ -221,74 +260,60 @@ public class part1 {
     }
 
     //-------------------------------------------------------------------------
-    public static void CPUrelease() {
+    public static void CPUrelease() throws FileNotFoundException {
         System.out.println("hello release");
         // release memory and devices
         avbMemory = avbMemory + exeJob.getRequestedMemory();
         avbDevices = avbDevices + exeJob.getRequestedDevices();
         // add the finished job to complete queue 
         System.out.println("Current exeJob: " + exeJob);
+        System.out.println("Current time = " + currentTime);
         ReadyQueue.remove(exeJob);
-        CompleteQueue.add(exeJob);
+        if (exeJob.getJobNumber() != -1) {
+            CompleteQueue.add(exeJob);
+        }
         // no jobs in CPU
         exeJob = null;
-        
 
     }
     //-------------------------------------------------------------------------
 
     public static void toReadyQueue(Job j) {
         System.out.println("hello ready");
-        if(j==null){
-        //double AvgBT;
-        
-        if (!HoldQueue1.isEmpty()) {
+        if (j == null) {
+            //double AvgBT;
 
-            for (Job p : HoldQueue1) {
-                //To set the waiting time
-                p.setWaitingTime(currentTime - p.getArrivingTime());
-                //p.setWaitingTime(p.getTurnAT() - p.getburstTime());
-            }
-            
-            ComputeAvgBT();
-            for (int y = 0; y < HoldQueue1.size(); y++) {
-                
-                Job job = HoldQueue1.peek();
-                if (avbMemory >= (job).getRequestedMemory() && avbDevices >= (job).getRequestedDevices()) {
-                    
-                    ComputeAvgBT();
-                    if (ReadyQueue.isEmpty()) {
-                        AvgBT = job.getburstTime(); //if ready queue is empty, the average burst time will be current process's
-                    }
+            if (!HoldQueue1.isEmpty()) {
+
+                for (int y = 0; y < HoldQueue1.size(); y++) {
+
+                    Job job = HoldQueue1.peek();
+                    if (avbMemory >= (job).getRequestedMemory() && avbDevices >= (job).getRequestedDevices()) {
+
+                        if (ReadyQueue.isEmpty()) {
+                            AvgBT = job.getburstTime(); //if ready queue is empty, the average burst time will be current process's
+                        }
 
                         //put the process in ready queue
                         ReadyQueue.add(job);
-                        
                         HoldQueue1.remove(job);
                         avbMemory -= job.getRequestedMemory();
                         avbDevices -= job.getRequestedDevices();
                         ComputeAvgBT();
                         SRAR();
+                    }
                 }
             }
-        }
-                
-        if (!HoldQueue2.isEmpty()) {
-            
-            for (Job p : HoldQueue2) {
-               //To set the waiting time
-               p.setWaitingTime(currentTime - p.getArrivingTime());
-               //p.setWaitingTime(p.getTurnAT() - p.getburstTime());
-            }
-            
-            for (int y = 0; y < HoldQueue2.size(); y++) {
-                Job job = HoldQueue2.peek();
-                if (avbMemory >= (job).getRequestedMemory() && avbDevices >= (job).getRequestedDevices()) {
-                    
-                    ComputeAvgBT();
-                    if (ReadyQueue.isEmpty()) {
-                        AvgBT = job.getburstTime(); //if queue 1 is empty, the average burst time will be current process's
-                    }
+
+            if (!HoldQueue2.isEmpty()) {
+
+                for (int y = 0; y < HoldQueue2.size(); y++) {
+                    Job job = HoldQueue2.peek();
+                    if (avbMemory >= (job).getRequestedMemory() && avbDevices >= (job).getRequestedDevices()) {
+
+                        if (ReadyQueue.isEmpty()) {
+                            AvgBT = job.getburstTime(); //if queue 1 is empty, the average burst time will be current process's
+                        }
 
                         //put the process in ready queue
                         ReadyQueue.add(job);
@@ -297,9 +322,10 @@ public class part1 {
                         avbDevices -= job.getRequestedDevices();
                         ComputeAvgBT();
                         SRAR();
+                    }
                 }
             }
-        }}else{//add job j to ready queue
+        } else {//add job j to ready queue
             ComputeAvgBT();
             if (ReadyQueue.isEmpty()) {
                 AvgBT = j.getburstTime(); //if queue 1 is empty, the average burst time will be current process's
@@ -307,7 +333,12 @@ public class part1 {
             ReadyQueue.add(j);
             avbMemory -= j.getRequestedMemory();
             avbDevices -= j.getRequestedDevices();
+            ComputeAvgBT();
             SRAR();
+        }
+        System.out.println("ReadyQueue");
+        for (Job job : ReadyQueue) {
+            System.out.println(job.getJobNumber());
         }
     }
 
@@ -319,7 +350,6 @@ public class part1 {
         //If not empty
         if (!HoldQueue1.isEmpty()) {
 
-            // sort based on dynamic priority
             // convert the queue to an array of objects to perform sorting
             Object[] array = HoldQueue1.toArray();
             Job temp;
@@ -344,23 +374,20 @@ public class part1 {
                 HoldQueue1.add((Job) array1);
             }
 
-
-//            HoldQueue1.add(HoldQueue1.poll());
-//            ComputeAvgBT();
-
+            ComputeAvgBT();
+            SRAR();
 
         }
 
     }
-    
-        public static void Sort_Queue2() {
-            System.out.println("hello sort2");
+
+    public static void Sort_Queue2() {
+        System.out.println("hello sort2");
         if (HoldQueue2.isEmpty()) {
             return;
         }
         //If not empty
         if (!HoldQueue2.isEmpty()) {
-
 
             // convert the queue to an array of objects to perform sorting
             Object[] array = HoldQueue2.toArray();
@@ -381,105 +408,85 @@ public class part1 {
                     }
                 }
             }
-            // return array to the holdqueue1
+            // return array to the holdqueue2
             for (Object array1 : array) {
                 HoldQueue2.add((Job) array1);
             }
 
-//            // move from Q2 to holdqueue1 
-//            HoldQueue2.add(HoldQueue2.poll());
-//            ComputeAvgBT();
+            ComputeAvgBT();
+            SRAR();
 
         }
 
     }
 
-    //--------------------------------------------------------------------------
+//--------------------------------------------------------------------------
     public static void Dynamic_Round_Robin(Job P) {
-    System.out.println("hello Dynamic");
+        System.out.println("hello Dynamic");
 
+        if (ReadyQueue.isEmpty()) {
 
-    
-    if (ReadyQueue.isEmpty()) {
-        if(P.getJobNumber()==1){
-        // set system time = first job arraival time
-        currentTime = P.getArrivingTime();
-        // allocate memory& devices to the job
-        // available memory = system main memory - first job requested memory
-        avbMemory = mainMemorySize - P.getRequestedMemory();
-        // available devices = system serial devices - first job requested devices
-        avbDevices = devices - P.getRequestedDevices();
-        // set quantum = first job burst time
-        quantum = P.getburstTime();
-        // send first job to CPU
-        exeJob = P;
-        // set the job start time of execution
-        exeJob.setStartTime(currentTime);
-        // set the executing job finish time
-        int finish = Math.min(exeJob.getremainingTime(), quantum);
-        exeJob.setFinishTime(quantum + currentTime);
-        }else{
-        // If there are no jobs in the ready queue
-        // The current executing job takes its time to finish
-        quantum = exeJob.getremainingTime();
-        System.out.print("quantum 1"+quantum );
-        // Set the job start time of execution
-        exeJob.setStartTime(currentTime);
-        // Set the executing job finish time
-        int finish = Math.min(exeJob.getremainingTime(), quantum);
-        exeJob.setFinishTime(currentTime + finish);
-        // Update SR & AR
-        SRAR();}
-    } else {
-        // Executing job is sent to the ready queue
-        ReadyQueue.add(exeJob);
-        ComputeAvgBT();
-        // Update SR & AR
-        SRAR();
-        // Start executing the next job
-        Job p = ReadyQueue.poll();
-        // Set the time quantum (TQ) for the next job
-        quantum = Math.min(p.getremainingTime(), AR);
-        System.out.print("quantum 2"+quantum);
-        // Send the next job to the CPU for execution
-        exeJob = p;
-        // Set the job start time of execution
-        exeJob.setStartTime(currentTime);
-        // Set the executing job finish time
-        int finish = Math.min(exeJob.getremainingTime(), quantum);
-        exeJob.setFinishTime(currentTime + finish);
-        // Update SR & AR
-        SRAR();
+            // If there are no jobs in the ready queue
+            // The current executing job takes its time to finish
+            quantum = exeJob.getremainingTime();
 
-        if (exeJob.getremainingTime() > quantum) {
-            // If the executing job is not terminated
-            // Return it to the ready queue with its updated burst time
-            ReadyQueue.add(exeJob);
+            System.out.print("QUANTUM 1 =" + quantum);
+
+            // Set the job start time of execution
+            exeJob.setStartTime(currentTime);
+            // Set the executing job finish time
+            int finish = Math.min(exeJob.getremainingTime(), quantum);
+            exeJob.setFinishTime(currentTime + finish);
             // Update SR & AR
             SRAR();
+        } else {
+            // Executing job is sent to the ready queue
+            ReadyQueue.add(exeJob);
+            ComputeAvgBT();
+            // Update SR & AR
+            SRAR();
+            // Start executing the next job
+            Job p = ReadyQueue.poll();
+            if (AR >= 0) {
+                // Set the time quantum (TQ) for the next job
+                quantum = Math.min(p.getremainingTime(), AR);
+            } else {
+                quantum = p.getremainingTime();
+            }
+            System.out.print("QUANTUM 2 =" + quantum);
+            // Send the next job to the CPU for execution
+            exeJob = p;
+            // Set the job start time of execution
+            exeJob.setStartTime(currentTime);
+            // Set the executing job finish time
+            int finish = Math.min(exeJob.getremainingTime(), quantum);
+            exeJob.setFinishTime(currentTime + finish);
+            // Update SR & AR
+            SRAR();
+
+            if (exeJob.getremainingTime() > quantum) {
+                // If the executing job is not terminated
+                // Return it to the ready queue with its updated burst time
+                ReadyQueue.add(exeJob);
+                // Update SR & AR
+                SRAR();
+            }
         }
     }
-}
 
     public static void externalEvent(PrintWriter write) throws FileNotFoundException {
         System.out.println("hello external");
         //get through SubmitQueue
         if (!SubmitQueue.isEmpty()) {
             System.out.println("into external");
+
             Job job = SubmitQueue.poll();
-            
-            if (job.getRequestedMemory() > mainMemorySize || job.getRequestedDevices() > devices) {
-            // If job's resource requirements exceed system capacity, reject the job
-            write.println("Job " + job.getJobNumber() + " has been rejected due to insufficient resources.");
-            return;
-            }
-            
+
             //case of "D" job
             if (job.getJobNumber() == -1) {
+                //SubmitQueue.remove(job);
                 currentState(write, job);
-                
-            } else if(job.getJobNumber()==999999){
-                finalState(write);}
+            }
             //case of "A" job
             if (job.getRequestedMemory() <= avbMemory && job.getRequestedDevices() <= avbDevices) {
                 // if there were available main memory and devices 
@@ -487,55 +494,42 @@ public class part1 {
                 toReadyQueue(job);
             } else {
                 // if there were not available main memory and devices
-                // the job is sent to hold queue 2 (waiting queue)
                 QueueingJobs(job);
                 SubmitQueue.remove(job);
-                
-                // save the entred time
-                
             }
 
-        }else{
+        } else {
             System.out.println("submit queue is empty");
         }
     }
 
     //-------------------------------------------------------------------------
     public static void QueueingJobs(Job p) {
-         System.out.println("hello queueing");
-        int burstTime = p.getburstTime();
+        System.out.println("hello queueing");
 
-        if (ReadyQueue.isEmpty()) {
-            AvgBT = burstTime;
+        if (p.getPriority() == 1) {
+            HoldQueue1.add(p);
+            Sort_Queue1();
 
-        } else {
-            ComputeAvgBT();
+        } else if (p.getPriority() == 2) {
+            HoldQueue2.add(p);
+            Sort_Queue2();
+
         }
-        
-
-        switch (p.getPriority()) {
-            case 1 -> {
-                HoldQueue1.add(p);
-                Sort_Queue1();
-            }
-            case 2 -> {
-                HoldQueue2.add(p);
-                Sort_Queue2();
-            }
-            default -> {
-                    ReadyQueue.add(p);
-                    avbMemory -= p.getRequestedMemory();
-                    avbDevices -= p.getRequestedDevices();
-                    ComputeAvgBT();
-                    SRAR();
-            }
+        System.out.println("HoldQueue1");
+        for (Job job : HoldQueue1) {
+            System.out.println(job.getJobNumber());
+        }
+        System.out.println("HoldQueue2");
+        for (Job job : HoldQueue2) {
+            System.out.println(job.getJobNumber());
         }
 
     }
 
     //-------------------------------------------------------------------------
     public static void SRAR() {
-         System.out.println("hello SRAR");
+        System.out.println("hello SRAR");
         //AR = to store remaining average of burst times
         //SR = to store sum of burst times
         if (ReadyQueue.isEmpty()) {
@@ -548,6 +542,7 @@ public class part1 {
             AR = SR / ReadyQueue.size();
         }
     }
+
     //-------------------------------------------------------------------------
     public static void finalState(PrintWriter write) throws FileNotFoundException {
         System.out.print("hello final");
@@ -558,16 +553,11 @@ public class part1 {
         write.println("  Job ID   Arrival Time    Finish Time  Turnaround Time   Waiting Time");
         write.println("  =================================================================");
         double avgTA = 0;
-        
+
         Collections.sort(CompleteQueue, new sortbyID());
         int size = CompleteQueue.size();
         for (int j = 0; j < size; j++) {
             Job p = CompleteQueue.poll();
-            
-            p.setTurnAT(p.getArrivingTime()-p.getFinishTime());
-            
-            p.setWaitingTime(p.getTurnAT()- p.getburstTime())  ;
-
             write.printf("%5d%11d%17d%25d%35f\n", p.getJobNumber(), p.getArrivingTime(),
                     p.getFinishTime(), p.getTurnAT(), p.getWaitingTime());
 
@@ -591,9 +581,9 @@ public class part1 {
         int size = CompleteQueue.size();
         for (int j = 0; j < size; j++) {
             Job p = CompleteQueue.poll();
-            p.setTurnAT(p.getArrivingTime()-p.getFinishTime());
-            write.printf("%5d%9d%11d%17d%15d%11f\n", p.getJobNumber(),p.getburstTime(), p.getArrivingTime(),
-                    p.getFinishTime(), p.getTurnAT(),p.getWaitingTime());
+
+            write.printf("%5d%9d%11d%17d%15d%11f\n", p.getJobNumber(), p.getburstTime(), p.getArrivingTime(),
+                    p.getFinishTime(), p.getTurnAT(), p.getWaitingTime());
             CompleteQueue.add(p);
 
         }
@@ -607,7 +597,7 @@ public class part1 {
             HoldQueue1.add(p);
 
         }
-         write.println();
+        write.println();
         size = HoldQueue2.size();
         write.println("\n\n  Hold Queue2: \n  ----------------");
 
@@ -629,10 +619,12 @@ public class part1 {
         }
         write.println("\n\n  Process running on the CPU: \n  ----------------------------");
         write.println("  Job ID   Run Time    Time Left");
-        write.printf("%5d%10d%15d\n\n\n", exeJob.getJobNumber(), exeJob.getburstTime(), exeJob.getremainingTime());
+        if (exeJob != null) {
+            write.printf("%5d%10d%15d\n\n\n", exeJob.getJobNumber(), exeJob.getburstTime(), exeJob.getremainingTime());
+        } else {
+            write.println("No running processes");
+        }
 
-       
-       
     }
     //-------------------------------------------------------------------------
 
@@ -644,5 +636,5 @@ public class part1 {
             return (int) (a.getJobNumber() - b.getJobNumber());
         }
     }
-    
+
 }

@@ -15,12 +15,13 @@ public class Job {
     private int requestedDevice;  //S
     private int priority;  //P
     private int burstTime;  //R
-    private int startTime; //start time
     private int TaT;//turn around
+    private int startTime; //start time
     private int finishTime; //to finish 
     private int remainingTime; //the tie process still need to finish burst time
     private double waitingTime;
     private double AvgBt;
+
 
     // empty constructor 
     Job() {
@@ -45,7 +46,7 @@ public class Job {
     // "D" job constructor
     Job(int time) {
         this.arrivingTime = time;
-        this.jobNumber = 0;
+        this.jobNumber = -1;
     }
 
     public void setAvgBt(double AvgBt) {
@@ -62,7 +63,7 @@ public class Job {
 
     
     public double getWaitingTime() {
-        return waitingTime;
+        return burstTime - TaT  ;
     }
 
     public void setWaitingTime(double waitingTime) {
@@ -77,8 +78,8 @@ public class Job {
         this.remainingTime = remainingTime;
     }
 
-    public void setTurnAT(int TAT) {
-        this.TaT = TAT;
+    public void setTurnAT(int TaT) {
+        this.TaT = TaT;
     }
 
     public int getburstTime() {

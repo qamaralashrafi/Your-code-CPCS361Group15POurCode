@@ -1,0 +1,269 @@
+
+<< At time 14:
+  Current Available Main Memory = 56
+  Current Devices               = 1
+
+  Completed jobs: 
+  ----------------
+  Job ID   Burst Time   Arrival Time    Finish Time  Turnaround Time   Waiting Time 
+  =================================================================
+    1        3          3                6              3   0.000000
+    2        2          4                8              4   2.000000
+    3        1          6                9              3   2.000000
+    4        5          8               14              6   1.000000
+
+
+
+  Hold Queue 1: 
+  ----------------
+
+
+
+  Hold Queue2: 
+  ----------------
+    7
+
+
+
+
+ (Ready Queue): 
+  ----------------
+  JobID    Remaining Time    Total Execution Time 
+  ===============================
+
+
+  Process running on the CPU: 
+  ----------------------------
+  Job ID   Run Time    Time Left
+    6         3              3
+
+
+<< Final state of system: 
+  Current Available Main Memory = 100
+  Current Devices               = 1
+
+  Completed jobs: 
+  ----------------
+  Job ID   Arrival Time    Finish Time  Turnaround Time   Waiting Time
+  =================================================================
+   -1         14               17                        3                           3.000000
+    1          3                6                        3                           0.000000
+    2          4                8                        4                           2.000000
+    3          6                9                        3                           2.000000
+    4          8               14                        6                           1.000000
+    6         12               17                        5                           2.000000
+    7         13               22                        9                           8.000000
+    8         15               21                        6                           2.000000
+    9         17               31                       14                           5.000000
+   10         20               41                       21                          16.000000
+   11         22               36                       14                          12.000000
+   12         23               34                       11                           8.000000
+   14         28               44                       16                          13.000000
+
+
+  System Turnaround Time =  8.846
+
+
+*********************************************************************
+
+
+<< At time 11:
+  Current Available Main Memory = 10
+  Current Devices               = 1
+
+  Completed jobs: 
+  ----------------
+  Job ID   Burst Time   Arrival Time    Finish Time  Turnaround Time   Waiting Time 
+  =================================================================
+    1        5          2                7              5   0.000000
+
+
+
+  Hold Queue 1: 
+  ----------------
+
+
+
+  Hold Queue2: 
+  ----------------
+
+
+
+ (Ready Queue): 
+  ----------------
+  JobID    Remaining Time    Total Execution Time 
+  ===============================
+    4         4              0
+
+    5         5              0
+
+    2         1              3
+
+    6         4              0
+
+
+
+  Process running on the CPU: 
+  ----------------------------
+  Job ID   Run Time    Time Left
+    3         2              2
+
+
+<< Final state of system: 
+  Current Available Main Memory = 60
+  Current Devices               = 1
+
+  Completed jobs: 
+  ----------------
+  Job ID   Arrival Time    Finish Time  Turnaround Time   Waiting Time
+  =================================================================
+   -1         11               19                        8                           8.000000
+    1          2                7                        5                           0.000000
+    2          4               17                       13                           9.000000
+    3          5               12                        7                           5.000000
+    4          7               23                       16                          12.000000
+    5          9               27                       18                          13.000000
+    6         10               32                       22                          18.000000
+    7         12               34                       22                          18.000000
+    8         14               26                       12                          11.000000
+    9         15               42                       27                          23.000000
+   10         17               46                       29                          25.000000
+   11         18               47                       29                          26.000000
+   12         20               48                       28                          25.000000
+   14         23               54                       31                          28.000000
+   15         25               55                       30                          27.000000
+
+
+  System Turnaround Time =  19.800
+
+
+*********************************************************************
+
+
+<< At time 10:
+  Current Available Main Memory = 40
+  Current Devices               = 6
+
+  Completed jobs: 
+  ----------------
+  Job ID   Burst Time   Arrival Time    Finish Time  Turnaround Time   Waiting Time 
+  =================================================================
+    1        8          2               10              8   0.000000
+
+
+
+  Hold Queue 1: 
+  ----------------
+
+
+
+  Hold Queue2: 
+  ----------------
+
+
+
+ (Ready Queue): 
+  ----------------
+  JobID    Remaining Time    Total Execution Time 
+  ===============================
+    4         7              0
+
+    3         8              0
+
+
+
+  Process running on the CPU: 
+  ----------------------------
+  Job ID   Run Time    Time Left
+    2         8              8
+
+
+
+<< At time 39:
+  Current Available Main Memory = 49
+  Current Devices               = 6
+
+  Completed jobs: 
+  ----------------
+  Job ID   Burst Time   Arrival Time    Finish Time  Turnaround Time   Waiting Time 
+  =================================================================
+   -1        0         10               25             15  12.000000
+    1        8          2               10              8   0.000000
+    2        8          3               30             27  22.000000
+    4        7          6               32             26  24.000000
+    9        3         23               39             16   9.000000
+
+
+
+  Hold Queue 1: 
+  ----------------
+    11    16     6
+
+
+  Hold Queue2: 
+  ----------------
+    7
+
+    8
+
+   10
+
+   17
+
+
+
+
+ (Ready Queue): 
+  ----------------
+  JobID    Remaining Time    Total Execution Time 
+  ===============================
+    5         6              4
+
+   13         6              0
+
+   15         1              0
+
+    3         1              7
+
+
+
+  Process running on the CPU: 
+  ----------------------------
+  Job ID   Run Time    Time Left
+    3         8              1
+
+
+<< Final state of system: 
+  Current Available Main Memory = 100
+  Current Devices               = 6
+
+  Completed jobs: 
+  ----------------
+  Job ID   Arrival Time    Finish Time  Turnaround Time   Waiting Time
+  =================================================================
+   -1         10               25                       15                          15.000000
+   -1         39               48                        9                           9.000000
+    1          2               10                        8                           0.000000
+    2          3               30                       27                          19.000000
+    3          4               40                       36                          28.000000
+    4          6               32                       26                          19.000000
+    5         14               54                       40                          30.000000
+    6         15               86                       71                          67.000000
+    7         18               67                       49                          40.000000
+    8         20               91                       71                          66.000000
+    9         23               39                       16                          13.000000
+   10         25               95                       70                          66.000000
+   11         28               79                       51                          39.000000
+   13         30               57                       27                          21.000000
+   15         33               48                       15                          14.000000
+   16         35               82                       47                          44.000000
+   17         36               97                       61                          59.000000
+   19         41              107                       66                          56.000000
+   22         51               65                       14                           9.000000
+
+
+  System Turnaround Time =  37.842
+
+
+*********************************************************************
+
