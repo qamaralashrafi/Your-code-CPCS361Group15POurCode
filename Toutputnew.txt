@@ -1,0 +1,109 @@
+
+<< At time 31:
+  Current Available Main Memory = 25
+  Current Devices               = 8
+
+  Completed jobs: 
+  ----------------
+  Job ID   Burst Time   Arrival Time    Finish Time  Turnaround Time   Waiting Time 
+  =================================================================
+    1        8         10               23             13          5
+    2        7         13               25             12          5
+
+
+
+  Hold Queue 1: 
+  ----------------
+
+
+
+  Hold Queue2: 
+  ----------------
+
+
+
+ (Ready Queue): 
+  ----------------
+  JobID    Remaining Time    Total Execution Time 
+  ===============================
+    5         7              0
+
+    6         7              0
+
+    3         2              5
+
+    4         7              0
+
+
+
+  Process running on the CPU: 
+  ----------------------------
+  Job ID   Run Time    Time Left
+    4         7              7
+
+
+
+<< At time 50:
+  Current Available Main Memory = 35
+  Current Devices               = 10
+
+  Completed jobs: 
+  ----------------
+  Job ID   Burst Time   Arrival Time    Finish Time  Turnaround Time   Waiting Time 
+  =================================================================
+    1        8         10               23             13          5
+    2        7         13               25             12          5
+    3        7         15               47             32         25
+    4        7         19               49             30         23
+
+
+
+  Hold Queue 1: 
+  ----------------
+
+
+
+  Hold Queue2: 
+  ----------------
+
+
+
+ (Ready Queue): 
+  ----------------
+  JobID    Remaining Time    Total Execution Time 
+  ===============================
+    5         2              5
+
+    6         2              5
+
+    6         2              5
+
+
+
+  Process running on the CPU: 
+  ----------------------------
+  Job ID   Run Time    Time Left
+    5         7              2
+
+
+<< Final state of system: 
+  Current Available Main Memory = 45
+  Current Devices               = 12
+
+  Completed jobs: 
+  ----------------
+  Job ID   Arrival Time    Finish Time  Turnaround Time   Waiting Time
+  =================================================================
+    1         10               23                       13                                  5
+    2         13               25                       12                                  5
+    3         15               47                       32                                 25
+    4         19               49                       30                                 23
+    5         21               51                       30                                 23
+    6         28               53                       25                                 18
+
+
+  System Turnaround Time =  23.667
+
+
+*********************************************************************
+

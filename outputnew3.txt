@@ -1,0 +1,98 @@
+
+<< At time 31:
+  Current Available Main Memory = 0
+  Current Devices               = 10
+
+  Completed jobs: 
+  ----------------
+  Job ID   Burst Time   Arrival Time    Finish Time  Turnaround Time   Waiting Time 
+  =================================================================
+    1        8         10               18              8          0
+    2        7         13               25             12          5
+
+
+
+  Hold Queue 1: 
+  ----------------
+     5     6
+
+
+  Hold Queue2: 
+  ----------------
+
+
+
+ (Ready Queue): 
+  ----------------
+  JobID    Remaining Time    Total Execution Time 
+  ===============================
+    4         7              0
+
+
+
+  Process running on the CPU: 
+  ----------------------------
+  Job ID   Run Time    Time Left
+    3         7              7
+
+
+
+<< At time 50:
+  Current Available Main Memory = 5
+  Current Devices               = 11
+
+  Completed jobs: 
+  ----------------
+  Job ID   Burst Time   Arrival Time    Finish Time  Turnaround Time   Waiting Time 
+  =================================================================
+    1        8         10               18              8          0
+    2        7         13               25             12          5
+    3        7         15               32             17         10
+    4        7         19               39             20         13
+    5        7         21               46             25         18
+
+
+
+  Hold Queue 1: 
+  ----------------
+
+
+
+  Hold Queue2: 
+  ----------------
+
+
+
+ (Ready Queue): 
+  ----------------
+  JobID    Remaining Time    Total Execution Time 
+  ===============================
+
+
+  Process running on the CPU: 
+  ----------------------------
+  Job ID   Run Time    Time Left
+    6         7              7
+
+
+<< Final state of system: 
+  Current Available Main Memory = 10
+  Current Devices               = 12
+
+  Completed jobs: 
+  ----------------
+  Job ID   Arrival Time    Finish Time  Turnaround Time   Waiting Time
+  =================================================================
+    1         10               18                        8                                  0
+    2         13               25                       12                                  5
+    3         15               32                       17                                 10
+    4         19               39                       20                                 13
+    5         21               46                       25                                 18
+    6         28               53                       25                                 18
+
+
+  System Turnaround Time =  17.833
+
+
+*********************************************************************
+

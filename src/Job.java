@@ -19,7 +19,7 @@ public class Job {
     private int startTime; //start time
     private int finishTime; //to finish 
     private int remainingTime; //the tie process still need to finish burst time
-    private double waitingTime;
+    private int waitingTime;
     private double AvgBt;
 
 
@@ -58,15 +58,17 @@ public class Job {
     }
 
     public int getTurnAT() {
+        setTurnAT(finishTime - arrivingTime);
         return finishTime - arrivingTime;
+        
     }
 
     
-    public double getWaitingTime() {
-        return burstTime - TaT  ;
+    public int getWaitingTime() {
+        return TaT - burstTime  ;
     }
 
-    public void setWaitingTime(double waitingTime) {
+    public void setWaitingTime(int waitingTime) {
         this.waitingTime = waitingTime;
     }
     
@@ -86,8 +88,8 @@ public class Job {
         return burstTime;
     }
 
-    public void setburstTime(int busrtTime) {
-        this.burstTime = busrtTime;
+    public void setburstTime(int burstTime) {
+        this.burstTime = burstTime;
     }
 
     public int getArrivingTime() {
