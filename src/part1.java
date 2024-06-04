@@ -499,7 +499,6 @@ public class part1 {
 
     //-------------------------------------------------------------------------
     public static void finalState(PrintWriter write) throws FileNotFoundException {
-        System.out.print("hello final");
         write.println("<< Final state of system: ");
         write.println("  Current Available Main Memory = " + mainMemorySize);
         write.println("  Current Devices               = " + devices);
@@ -524,7 +523,6 @@ public class part1 {
 
     //-------------------------------------------------------------------------
     public static void currentState(PrintWriter write, Job job) {
-        System.out.print("hello current");
         write.println("\n<< At time " + job.getArrivingTime() + ":");
         write.println("  Current Available Main Memory = " + avbMemory);
         write.println("  Current Devices               = " + avbDevices);
